@@ -5,6 +5,7 @@ import '../models/task.dart';
 
 abstract class StorageService {
   Future<List<Task>> getTasks();
+  Future<Task> addTask(String title, {String? parentId});
   Future<void> saveTask(Task task);
   Future<void> updateTask(Task task);
   Future<void> deleteTask(String id);
@@ -22,7 +23,39 @@ class SharedPreferencesStorage implements StorageService {
     if (tasksJson == null) return [];
 
     final List<dynamic> tasksList = json.decode(tasksJson);
+    // sort by SortOrder Desc
+    tasksList.sort((a, b) => b['sortOrder'].compareTo(a['sortOrder']));
     return tasksList.map((json) => Task.fromJson(json)).toList();
+  }
+
+  // get max sortOrder
+  Future<int> _getMaxSortOrder() async {
+    final tasks = await getTasks();
+    if (tasks.isEmpty) return -2000000000000;
+    return tasks.map((task) => task.sortOrder).reduce((a, b) => a > b ? a : b);
+  }
+
+  @override
+  Future<Task> addTask(String title, {String? parentId} ) async {
+    final newTask = Task(
+      id: const Uuid().v4(),
+      title: title.trim(),
+      parentId: parentId ?? "",
+      content: "",
+      completed: false,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+      expanded: false,
+      sortOrder: await _getMaxSortOrder() + 1000,
+    );
+
+    // 保存到存储
+    final tasks = await getTasks();
+    // add to list top
+    tasks.insert(0, newTask);
+    await _saveTasks(tasks);
+
+    return newTask;
   }
 
   @override

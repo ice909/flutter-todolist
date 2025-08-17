@@ -5,48 +5,45 @@ class TaskWidget extends StatelessWidget {
   final Task todo;
   final VoidCallback onToggle;
   final VoidCallback onDelete;
-  final VoidCallback onEdit;
 
   const TaskWidget({
-    Key? key,
+    super.key,
     required this.todo,
     required this.onToggle,
     required this.onDelete,
-    required this.onEdit,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      child: ListTile(
-        leading: Checkbox(
-          value: todo.completed,
-          onChanged: (_) => onToggle(),
-        ),
-        title: Text(
-          todo.title,
-          style: TextStyle(
-            decoration: todo.completed
-                ? TextDecoration.lineThrough
-                : TextDecoration.none,
-            color: todo.completed ? Colors.grey : null,
-          ),
-        ),
-        subtitle: todo.content.isNotEmpty
-            ? Text(
-                todo.content,
-                style: TextStyle(
-                  color: todo.completed ? Colors.grey : Colors.grey[600],
+      clipBehavior: Clip.antiAlias, // 确保波纹效果不超出 Card 边界
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => (),
+          child: Row(
+            
+            children: [
+              Checkbox(
+                value: todo.completed,
+                onChanged: (_) => onToggle(),
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  todo.title,
+                  style: TextStyle(
+                    decoration: todo.completed
+                        ? TextDecoration.lineThrough
+                        : TextDecoration.none,
+                    color: todo.completed ? Colors.grey : null,
+                  ),
                 ),
-              )
-            : null,
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            IconButton(icon: const Icon(Icons.edit), onPressed: onEdit),
-            IconButton(icon: const Icon(Icons.delete), onPressed: onDelete),
-          ],
+              ),
+            ],
+          ),
         ),
       ),
     );

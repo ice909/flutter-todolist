@@ -4,6 +4,7 @@ import 'package:flutter_todolist/screens/todolist_screen.dart';
 
 void main() {
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 

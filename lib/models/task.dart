@@ -23,7 +23,7 @@ class Task {
     this.deletedAt,
     this.priority = 0,
     this.tags,
-    this.sortOrder = -2000000,
+    this.sortOrder = -2000000000000,
     this.expanded = false,
   }) : createdAt = createdAt ?? DateTime.now();
 
